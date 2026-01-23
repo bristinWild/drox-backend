@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
 import { BadRequestException } from '@nestjs/common';
+import { UserService } from 'src/users/user.service';
 import * as bcrypt from 'bcrypt';
 
 
@@ -13,6 +14,7 @@ export class AuthService {
         @Inject('TWILIO') private twilio: any,
         private config: ConfigService,
         private jwt: JwtService,
+        private readonly userService: UserService,
     ) { }
 
 
@@ -52,15 +54,12 @@ export class AuthService {
 
         await this.redis.del(key);
 
-        // 🔹 Create or fetch user (stub for now)
-        const user = {
-            id: uuid(),
-            phone,
-            createdAt: new Date(),
-        };
+        const user = await this.userService.findOrCreateByPhone(phone);
 
-        // 🔐 Issue JWT + refresh
-        const tokens = await this.generateTokens(user);
+        const tokens = await this.generateTokens({
+            id: user.id,
+            phone: user.phone || phone,
+        })
 
         return {
             ...tokens,
@@ -69,11 +68,10 @@ export class AuthService {
     }
 
     private async generateTokens(user: { id: string; phone: string }) {
-        const sessionId = uuid();
+
         const payload = {
             sub: user.id,
             phone: user.phone,
-            sid: sessionId,
         };
 
         const accessToken = this.jwt.sign(payload, {
@@ -83,8 +81,6 @@ export class AuthService {
         const refreshToken = this.jwt.sign(payload, {
             expiresIn: '7d',
         });
-
-        await this.storeRefreshToken(user.id, sessionId, refreshToken);
 
         return {
             accessToken,

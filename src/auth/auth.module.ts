@@ -8,6 +8,7 @@ import { TwilioProvider } from 'src/twilio/twilio.provider';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { JwtRefreshStrategy } from 'src/auth/jwt-refresh.strategy';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -28,8 +29,9 @@ import { JwtRefreshStrategy } from 'src/auth/jwt-refresh.strategy';
         };
       },
     }),
+    UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, TwilioProvider, JwtStrategy,  JwtRefreshStrategy,],
+  providers: [AuthService, TwilioProvider, JwtStrategy, JwtRefreshStrategy,],
 })
 export class AuthModule { }
