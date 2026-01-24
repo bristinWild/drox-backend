@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
+import * as bcrypt from "bcrypt";
 
 
 @Injectable()
@@ -58,6 +59,35 @@ export class UserService {
 
         return this.userRepo.save(user)
     }
+
+    async setPin(userId: string, pin: string): Promise<void> {
+        const user = await this.findById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const hash = await bcrypt.hash(pin, 10);
+        user.pinHash = hash;
+        user.hasPin = true;
+
+        await this.userRepo.save(user);
+    }
+
+    async verifyPin(phone: string, pin: string): Promise<User> {
+        const user = await this.findByPhone(phone);
+
+        if (!user || !user.hasPin || !user.pinHash) {
+            throw new Error("PIN not set");
+        }
+
+        const isValid = await bcrypt.compare(pin, user.pinHash);
+        if (!isValid) {
+            throw new Error("Invalid PIN");
+        }
+
+        return user;
+    }
+
 
 
 

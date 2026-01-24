@@ -1,8 +1,11 @@
-import { Controller, Get, Patch, Body, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Patch, Body, Req, UseGuards, Post } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { UserService } from "src/users/user.service";
 import { OnboardingDto } from "src/users/dto/onboarding.dto";
 import { UnauthorizedException } from "@nestjs/common";
+import { BadRequestException } from "@nestjs/common";
+import { AuthService } from "src/auth/auth.service";
+
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
@@ -35,7 +38,19 @@ export class UserController {
         );
     }
 
+    @Post("set-pin")
+    @UseGuards(JwtAuthGuard)
+    async setPin(@Req() req, @Body() body: { pin: string }) {
+        const userId = req.user.userId;
 
+        if (!body.pin || body.pin.length !== 6) {
+            throw new BadRequestException("PIN must be 6 digits");
+        }
+
+        await this.userService.setPin(userId, body.pin);
+
+        return { success: true };
+    }
 
 
 }

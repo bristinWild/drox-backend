@@ -11,4 +11,5 @@ export class OnboardingDto {
     @IsOptional()
     @IsString()
     avatarUrl?: string;
+
 }

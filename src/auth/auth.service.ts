@@ -56,15 +56,10 @@ export class AuthService {
 
         const user = await this.userService.findOrCreateByPhone(phone);
 
-        const tokens = await this.generateTokens({
+        return this.issueTokensForUser({
             id: user.id,
             phone: user.phone || phone,
-        })
-
-        return {
-            ...tokens,
-            user,
-        };
+        });
     }
 
     private async generateTokens(user: { id: string; phone: string }) {
@@ -135,6 +130,18 @@ export class AuthService {
             id: payload.userId,
             phone: payload.phone,
         });
+    }
+
+    async issueTokensForUser(user: { id: string; phone: string }) {
+        const tokens = await this.generateTokens({
+            id: user.id,
+            phone: user.phone,
+        });
+
+        return {
+            ...tokens,
+            user,
+        };
     }
 
 }

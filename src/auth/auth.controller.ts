@@ -5,12 +5,15 @@ import { VerifyOtpDto } from 'src/dto/verify-otp.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/jwt-refresh.guard';
 import { Public } from 'src/common/decorators/public.decorator';
-import { Response } from 'express';
+import { UserService } from 'src/users/user.service';
+import { BadRequestException } from '@nestjs/common';
 
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService,
+        private userService: UserService
+    ) { }
 
 
     @Public()
@@ -72,6 +75,41 @@ export class AuthController {
             sessionId: req.user.sessionId,
             refreshToken: req.cookies.refreshToken,
         });
+    }
+
+    @Post("login-pin")
+    async loginWithPin(
+        @Body() body: { phone: string; pin: string }
+    ) {
+        const user = await this.userService.verifyPin(body.phone, body.pin);
+
+        if (!user.phone) {
+            throw new BadRequestException("User does not have a phone number");
+        }
+
+        return this.authService.issueTokensForUser({
+            id: user.id,
+            phone: user.phone,
+        });
+    }
+
+    @Post("set-pin")
+    @UseGuards(JwtAuthGuard)
+    async setPin(
+        @Req() req,
+        @Body() body: { pin: string },
+    ) {
+        const userId = req.user.userId;
+        const pin = body.pin;
+
+        // 🔒 Validation
+        if (!pin || !/^\d{6}$/.test(pin)) {
+            throw new BadRequestException("PIN must be exactly 6 digits");
+        }
+
+        await this.userService.setPin(userId, pin);
+
+        return { success: true };
     }
 
 

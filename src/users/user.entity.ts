@@ -34,6 +34,12 @@ export class User {
     @Column({ default: false })
     isOnboarded: boolean;
 
+    @Column({ nullable: true })
+    pinHash?: string;
+
+    @Column({ default: false })
+    hasPin: boolean;
+
     /** Flexible future data */
     @Column({ type: 'jsonb', nullable: true })
     metadata?: Record<string, any>;
