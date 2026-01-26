@@ -34,8 +34,10 @@ export class UserController {
         return this.userService.createOnboarding(
             userId,
             dto.userName,
+            dto.dob,
             dto.bio,
             dto.avatarUrl,
+
         );
     }
 

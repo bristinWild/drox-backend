@@ -1,6 +1,8 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsDate, IsDateString } from 'class-validator';
+
 
 export class OnboardingDto {
+
     @IsString()
     userName: string;
 
@@ -11,5 +13,10 @@ export class OnboardingDto {
     @IsOptional()
     @IsString()
     avatarUrl?: string;
+
+
+    @IsDateString()
+    dob: Date;
+
 
 }

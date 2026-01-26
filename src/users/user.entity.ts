@@ -28,6 +28,9 @@ export class User {
     @Column({ nullable: true })
     avatarUrl?: string;
 
+    @Column({ type: 'date', nullable: true })
+    dateOfBirth?: Date;
+
     @Column({ default: true })
     isActive: boolean;
 

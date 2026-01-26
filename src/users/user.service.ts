@@ -40,7 +40,7 @@ export class UserService {
         return user;
     }
 
-    async createOnboarding(id: string, userName: string, bio?: string, avatarUrl?: string): Promise<User> {
+    async createOnboarding(id: string, userName: string, dob: Date, bio?: string, avatarUrl?: string): Promise<User> {
         let user = await this.findById(id);
         if (!user) {
             throw new Error("Please Verify your login first")
@@ -54,6 +54,8 @@ export class UserService {
         if (avatarUrl !== undefined) {
             user.avatarUrl = avatarUrl;
         }
+
+        user.dateOfBirth = dob;
 
         user.isOnboarded = true
 
