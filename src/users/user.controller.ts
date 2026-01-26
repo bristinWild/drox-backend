@@ -23,6 +23,7 @@ export class UserController {
     }
 
     @Patch('onboarding')
+    @UseGuards(JwtAuthGuard)
     async completeOnboarding(@Req() req, @Body() dto: OnboardingDto) {
         const userId = req.user.userId;
 

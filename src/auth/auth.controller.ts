@@ -112,6 +112,28 @@ export class AuthController {
         return { success: true };
     }
 
+    @Post("has-pin")
+    async hasPin(
+        @Body() body: { phone: string }
+    ) {
+        const { phone } = body;
 
+
+        if (!phone) {
+            return { exists: false, hasPin: false };
+        }
+
+        const user = await this.userService.findByPhone(phone);
+
+        if (!user) {
+            return { exists: false, hasPin: false };
+        }
+
+        return {
+            exists: true,
+            hasPin: !!user.hasPin,
+        };
+
+    }
 
 }
