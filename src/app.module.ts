@@ -7,6 +7,7 @@ import { jwt } from 'twilio';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
+import { ActivityModule } from './activity/activity.module';
 
 
 
@@ -36,6 +37,7 @@ import { UsersModule } from 'src/users/users.module';
     AuthModule,
     RedisModule,
     UsersModule,
+    ActivityModule,
   ],
   providers: [],
 })
