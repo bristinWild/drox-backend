@@ -12,27 +12,9 @@ export class ActivityService {
         private readonly activityRepo: Repository<ActivityEntity>,
     ) { }
 
-    // async create(dto: CreateActivityDto, userId: string) {
-
-    //     if (dto.isPaid && (!dto.fee || dto.fee <= 0)) {
-    //         throw new BadRequestException(
-    //             'Paid activity must have a valid fee',
-    //         );
-    //     }
-
-    //     if (!dto.images.length) {
-    //         throw new BadRequestException(
-    //             'At least one image is required',
-    //         );
-    //     }
-
-    //     const activity = this.activityRepo.create({
-    //         ...dto,
-    //         createdByUserId: userId,
-    //     });
-
-    //     return this.activityRepo.save(activity);
-    // }
+    async findByHost(createdByUserId: string): Promise<ActivityEntity[] | null> {
+        return this.activityRepo.find({ where: { createdByUserId } });
+    }
 
     async create(dto: CreateActivityDto, userId?: string) {
         const activity = this.activityRepo.create({
@@ -41,5 +23,16 @@ export class ActivityService {
         });
 
         return this.activityRepo.save(activity);
+    }
+
+    async getAllActivity() {
+        const allData = await this.activityRepo.find();
+        console.log(allData);
+        return allData;
+    }
+
+    async getUserActivity(createdByUserId: string) {
+        const activities = await this.findByHost(createdByUserId);
+        return activities;
     }
 }

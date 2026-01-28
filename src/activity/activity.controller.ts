@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
 import { CreateActivityDto } from 'src/activity/dto/create-activity.dto';
 import { ActivityService } from 'src/activity/activity.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -21,6 +21,20 @@ export class ActivityController {
         console.log('Using userId:', userId);
 
         return this.activityService.create(dto, userId);
+    }
+
+    @Get("/")
+    @UseGuards(JwtAuthGuard)
+    async getAllActivity() {
+        return await this.activityService.getAllActivity()
+    }
+
+    @Get("/user/activities")
+    @UseGuards(JwtAuthGuard)
+    async getActivitiesForSpecificUser(@Req() req: any) {
+        let userid = "dev-user"
+        console.log(userid);
+        return await this.activityService.getUserActivity(userid);
     }
 
 }
