@@ -16,8 +16,16 @@ export class UserController {
     ) { }
 
     @Get('me')
+    @UseGuards(JwtAuthGuard)
     async getMe(@Req() req) {
         const userId = req.user.userId;
+        const user = await this.userService.findById(userId)
+        return user;
+    }
+
+    @Get('me/test')
+    async getMeTest() {
+        const userId = "fee2bc16-2c8e-4591-b1b1-dea0084f3fca"
         const user = await this.userService.findById(userId)
         return user;
     }
@@ -54,6 +62,8 @@ export class UserController {
 
         return { success: true };
     }
+
+
 
 
 }
