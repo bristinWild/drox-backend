@@ -5,6 +5,7 @@ import { OnboardingDto } from "src/users/dto/onboarding.dto";
 import { UnauthorizedException } from "@nestjs/common";
 import { BadRequestException } from "@nestjs/common";
 import { AuthService } from "src/auth/auth.service";
+import { EditProfileDto } from "src/users/dto/edit-profile.dto";
 
 
 @Controller('user')
@@ -61,6 +62,20 @@ export class UserController {
         await this.userService.setPin(userId, body.pin);
 
         return { success: true };
+    }
+
+    @Post("edit-profile")
+    @UseGuards(JwtAuthGuard)
+    async editProfile(@Req() req, @Body() body: EditProfileDto) {
+        const userId = req.user.userId;
+
+        return this.userService.editProfile(
+            userId,
+            body.username,
+            body.bio,
+            body.avatarUrl,
+        );
+
     }
 
 

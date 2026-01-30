@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
 import * as bcrypt from "bcrypt";
+import { BadRequestException } from "@nestjs/common";
 
 
 @Injectable()
@@ -91,6 +92,40 @@ export class UserService {
     }
 
 
+    async editProfile(userId: string, username?: string, bio?: string, avatarUrl?: string) {
+        let user = await this.userRepo.findOne({ where: { id: userId } });
+
+        const exists = await this.userRepo.findOne({ where: { name: username } });
+        if (exists && exists.id !== userId) {
+            throw new BadRequestException("Username already taken");
+        }
+
+        if (!user) {
+            throw new NotFoundException("User not found")
+        }
+
+        if (username !== undefined) {
+            user.name = username;
+        }
+
+        if (bio !== undefined) {
+            user.bio = bio;
+        }
+
+        if (avatarUrl !== undefined) {
+            user.avatarUrl = avatarUrl;
+        }
+
+        await this.userRepo.save(user);
+
+        return {
+            id: user.id,
+            name: user.name,
+            bio: user.bio,
+            avatarUrl: user.avatarUrl,
+        };
+
+    }
 
 
 
