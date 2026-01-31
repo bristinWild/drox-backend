@@ -101,4 +101,35 @@ export class ActivityParticipantService {
 
         return participant;
     }
+
+
+
+    async checkJoiningStatus(userId: string, activityId: string) {
+        let participant = await this.participantRepo.findOne({
+            where: {
+                activityId: activityId,
+                userId: userId
+            }
+        });
+
+
+        if (!participant) {
+            return { "hasJoined": false }
+        } else {
+            return { "hasJoined": true }
+        }
+
+    }
+
+    async checkAllBookings(userId: string) {
+        let bookedActivities = await this.participantRepo.find({ where: { userId: userId } });
+
+        console.log(bookedActivities)
+
+        if (!bookedActivities) {
+            throw new NotFoundException("you didn't booked anything yet")
+        } else {
+            return bookedActivities;
+        }
+    }
 }

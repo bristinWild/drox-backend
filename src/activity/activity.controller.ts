@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get, Param } from '@nestjs/common';
 import { CreateActivityDto } from 'src/activity/dto/create-activity.dto';
 import { ActivityService } from 'src/activity/activity.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -16,8 +16,8 @@ export class ActivityController {
         @Req() req: any,
     ) {
         console.log('USER:', req.user);
-
-        const userId = req.user?.id ?? 'dev-user';
+        // const userId = 'dev-user'; (i use this for testing)
+        const userId = req.user?.userId;
         console.log('Using userId:', userId);
 
         return this.activityService.create(dto, userId);
@@ -32,9 +32,15 @@ export class ActivityController {
     @Get("/user/activities")
     @UseGuards(JwtAuthGuard)
     async getActivitiesForSpecificUser(@Req() req: any) {
-        let userid = "dev-user"
+        let userid = req.user.userId;
         console.log(userid);
         return await this.activityService.getUserActivity(userid);
+    }
+
+    @Get(":id")
+    @UseGuards(JwtAuthGuard)
+    async getActivityInfo(@Param('id') activityId: string) {
+        return await this.activityService.getActivityById(activityId);
     }
 
 }

@@ -17,10 +17,14 @@ export class ActivityService {
     }
 
     async create(dto: CreateActivityDto, userId?: string) {
+
+        console.log(userId)
         const activity = this.activityRepo.create({
             ...dto,
-            createdByUserId: userId ?? 'dev-user',
+            createdByUserId: userId,
         });
+
+
 
         return this.activityRepo.save(activity);
     }
@@ -34,5 +38,9 @@ export class ActivityService {
     async getUserActivity(createdByUserId: string) {
         const activities = await this.findByHost(createdByUserId);
         return activities;
+    }
+
+    async getActivityById(activityId: string) {
+        return await this.activityRepo.findOne({ where: { id: activityId } })
     }
 }
