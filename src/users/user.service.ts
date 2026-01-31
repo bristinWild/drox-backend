@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
 import * as bcrypt from "bcrypt";
 import { BadRequestException } from "@nestjs/common";
+import { Gender } from "src/users/enums/gender.enum";
 
 
 @Injectable()
@@ -41,7 +42,7 @@ export class UserService {
         return user;
     }
 
-    async createOnboarding(id: string, userName: string, dob: Date, bio?: string, avatarUrl?: string): Promise<User> {
+    async createOnboarding(id: string, userName: string, dob: Date, gender: Gender, bio?: string, avatarUrl?: string): Promise<User> {
         let user = await this.findById(id);
         if (!user) {
             throw new Error("Please Verify your login first")
@@ -57,8 +58,10 @@ export class UserService {
         }
 
         user.dateOfBirth = dob;
+        user.gender = gender;
 
-        user.isOnboarded = true
+        user.isOnboarded = true;
+
 
         return this.userRepo.save(user)
     }

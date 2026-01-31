@@ -8,6 +8,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { ActivityModule } from './activity/activity.module';
+import { ActivityParticipantModule } from 'src/activity-participants/activity-particiant.module';
 
 
 
@@ -38,6 +39,7 @@ import { ActivityModule } from './activity/activity.module';
     RedisModule,
     UsersModule,
     ActivityModule,
+    ActivityParticipantModule,
   ],
   providers: [],
 })

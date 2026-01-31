@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm";
+import { GenderPolicy } from "src/activity/enums/gender-policy.enum";
 
 
 @Entity('activity')
@@ -33,6 +34,25 @@ export class ActivityEntity {
 
     @Column()
     createdByUserId: string;
+
+    @Column({ default: 0 })
+    participantCount: number;
+
+    @Column({
+        type: 'enum',
+        enum: GenderPolicy,
+        default: GenderPolicy.ALL,
+    })
+    genderPolicy: GenderPolicy;
+
+    @Column()
+    maxParticipants: number;
+
+    @Column({ default: 0 })
+    maleJoinedCount: number;
+
+    @Column({ default: 0 })
+    femaleJoinedCount: number;
 
     @CreateDateColumn()
     createdAt: Date;

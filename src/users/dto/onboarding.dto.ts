@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsDate, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsDate, IsDateString, IsEnum } from 'class-validator';
+import { Gender } from 'src/users/enums/gender.enum';
 
 
 export class OnboardingDto {
@@ -17,6 +18,9 @@ export class OnboardingDto {
 
     @IsDateString()
     dob: Date;
+
+    @IsEnum(Gender)
+    gender: Gender;
 
 
 }

@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm";
+import { Gender } from "src/users/enums/gender.enum";
 
 
 
@@ -43,11 +44,16 @@ export class User {
     @Column({ default: false })
     hasPin: boolean;
 
-    /** Flexible future data */
+    @Column({
+        type: 'enum',
+        enum: Gender,
+        nullable: true,
+    })
+    gender?: Gender;
+
     @Column({ type: 'jsonb', nullable: true })
     metadata?: Record<string, any>;
 
-    /** Audit */
     @CreateDateColumn()
     createdAt: Date;
 

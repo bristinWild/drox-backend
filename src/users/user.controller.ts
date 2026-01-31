@@ -44,6 +44,7 @@ export class UserController {
             userId,
             dto.userName,
             dto.dob,
+            dto.gender,
             dto.bio,
             dto.avatarUrl,
 
